@@ -165,23 +165,24 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="border-b">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50/30 via-background to-amber-50/30">
+      <div className="border-b bg-gradient-to-r from-orange-500/95 to-amber-600/95 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="bg-muted p-2 rounded-md">
-                <LayoutDashboard className="h-5 w-5 text-muted-foreground" />
+              <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-md border border-white/30">
+                <ChefHat className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold">Admin Dashboard</h1>
-                <p className="text-sm text-muted-foreground">Customer management</p>
+                <h1 className="text-xl font-semibold text-white">Customer Loyalty Dashboard</h1>
+                <p className="text-sm text-white/90">Ming's Chinese Cuisine</p>
               </div>
             </div>
             <Button 
               onClick={handleLogout} 
               variant="outline"
               size="sm"
+              className="bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white/30"
               data-testid="button-logout"
             >
               <LogOut className="h-4 w-4 mr-2" />
@@ -193,59 +194,73 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
+          <Card className="bg-gradient-to-br from-white to-orange-50/50 border-orange-100/50">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-orange-700/80">
                 Total Customers
               </CardTitle>
-              <User className="h-4 w-4 text-muted-foreground" />
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-md">
+                <User className="h-4 w-4 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold">{customers.length}</div>
+              <div className="text-3xl font-semibold text-orange-950">{customers.length}</div>
+              <p className="text-xs text-orange-700/60 mt-1">Registered members</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-white to-amber-50/50 border-amber-100/50">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-amber-700/80">
                 Total Visits
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-2 rounded-md">
+                <TrendingUp className="h-4 w-4 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold">
+              <div className="text-3xl font-semibold text-amber-950">
                 {customers.reduce((sum, c) => sum + c.visits, 0)}
               </div>
+              <p className="text-xs text-amber-700/60 mt-1">All-time visits</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-white to-orange-50/50 border-orange-100/50">
             <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-orange-700/80">
                 Avg Visits/Customer
               </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+              <div className="bg-gradient-to-br from-orange-600 to-amber-600 p-2 rounded-md">
+                <Calendar className="h-4 w-4 text-white" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold">
+              <div className="text-3xl font-semibold text-orange-950">
                 {customers.length > 0 
                   ? (customers.reduce((sum, c) => sum + c.visits, 0) / customers.length).toFixed(1)
                   : '0'}
               </div>
+              <p className="text-xs text-orange-700/60 mt-1">Customer loyalty</p>
             </CardContent>
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Customer List</CardTitle>
+        <Card className="border-orange-100/30">
+          <CardHeader className="bg-gradient-to-r from-orange-50/50 to-amber-50/30">
+            <div className="flex items-center gap-2">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-md">
+                <User className="h-4 w-4 text-white" />
+              </div>
+              <CardTitle className="text-lg text-orange-950">Customer List</CardTitle>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
             {customers.length === 0 ? (
               <div className="text-center py-16 px-4">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="bg-muted p-4 rounded-full">
-                    <User className="h-8 w-8 text-muted-foreground" />
+                  <div className="bg-gradient-to-br from-orange-100 to-amber-100 p-4 rounded-full">
+                    <User className="h-8 w-8 text-orange-600" />
                   </div>
                   <div>
                     <p className="font-medium text-foreground">No customers yet</p>
@@ -257,63 +272,78 @@ export default function Admin() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b">
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <tr className="border-b bg-orange-50/30">
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         Name
                       </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         Phone
                       </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         Visits
                       </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         First Visit
                       </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         Last Visit
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y">
-                    {customers.map((customer) => (
-                      <tr 
-                        key={customer._id.toString()} 
-                        className="hover-elevate"
-                        data-testid={`row-customer-${customer._id.toString()}`}
-                      >
-                        <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <div className="bg-muted p-1.5 rounded-md">
-                              <User className="h-3.5 w-3.5 text-muted-foreground" />
+                  <tbody className="divide-y divide-orange-100/30">
+                    {customers.map((customer) => {
+                      const getVisitBadge = (visits: number) => {
+                        if (visits >= 10) return "bg-gradient-to-r from-orange-600 to-amber-600 text-white";
+                        if (visits >= 5) return "bg-gradient-to-r from-orange-500 to-orange-600 text-white";
+                        if (visits >= 3) return "bg-gradient-to-r from-amber-400 to-amber-500 text-white";
+                        return "bg-orange-100 text-orange-800";
+                      };
+
+                      return (
+                        <tr 
+                          key={customer._id.toString()} 
+                          className="hover-elevate"
+                          data-testid={`row-customer-${customer._id.toString()}`}
+                        >
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <div className="bg-gradient-to-br from-orange-500/10 to-amber-500/10 p-1.5 rounded-md border border-orange-200/50">
+                                <User className="h-3.5 w-3.5 text-orange-700" />
+                              </div>
+                              <span className="text-sm font-medium text-orange-950">{customer.name}</span>
                             </div>
-                            <span className="text-sm font-medium">{customer.name}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">{customer.phoneNumber}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-md">
-                            <TrendingUp className="h-3.5 w-3.5 text-muted-foreground" />
-                            <span className="text-sm font-medium">{customer.visits}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-muted-foreground">
-                            {new Date(customer.createdAt).toLocaleDateString()}
-                          </span>
-                        </td>
-                        <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-muted-foreground">
-                            {new Date(customer.updatedAt).toLocaleDateString()}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Phone className="h-3.5 w-3.5 text-orange-600/60" />
+                              <span className="text-sm text-muted-foreground">{customer.phoneNumber}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium text-sm ${getVisitBadge(customer.visits)}`}>
+                              <TrendingUp className="h-3.5 w-3.5" />
+                              {customer.visits}
+                            </div>
+                          </td>
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-3.5 w-3.5 text-green-600/70" />
+                              <span className="text-sm text-muted-foreground">
+                                {new Date(customer.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-3.5 w-3.5 text-blue-600/70" />
+                              <span className="text-sm text-muted-foreground">
+                                {new Date(customer.updatedAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
