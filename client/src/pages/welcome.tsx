@@ -387,35 +387,53 @@ export default function Welcome() {
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-5 pt-2">
             <div className="w-full space-y-4">
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
                 <input
                   type="text"
                   placeholder="Enter Your Name"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   disabled={!!existingCustomer}
-                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl px-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gray-100 shadow-sm transition-all placeholder:text-gray-400"
+                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gradient-to-r disabled:from-gray-50 disabled:to-gray-100 disabled:border-gray-300 shadow-sm transition-all placeholder:text-gray-400 font-medium"
                   data-testid="input-name"
                   required
                 />
               </div>
               <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
                 <input
                   type="tel"
                   placeholder="Enter Phone Number"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
-                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl px-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 shadow-sm transition-all placeholder:text-gray-400"
+                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 shadow-sm transition-all placeholder:text-gray-400 font-medium"
                   data-testid="input-phone"
                   required
                 />
               </div>
             </div>
             {existingCustomer && (
-              <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-3 shadow-sm" data-testid="text-returning-customer">
-                <p className="text-green-700 font-semibold text-sm text-center flex items-center justify-center gap-2">
-                  <span className="text-lg">✓</span>
-                  Welcome back, {existingCustomer.name}!
-                </p>
+              <div className="w-full relative overflow-hidden bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-4 shadow-lg" data-testid="text-returning-customer">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+                <div className="relative flex items-center justify-center gap-3">
+                  <div className="bg-white/20 backdrop-blur-sm rounded-full p-2">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white font-bold text-base">Welcome back, {existingCustomer.name}!</p>
+                    <p className="text-white/90 text-xs mt-0.5">We're happy to see you again</p>
+                  </div>
+                </div>
               </div>
             )}
             <button

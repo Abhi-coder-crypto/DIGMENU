@@ -1051,7 +1051,7 @@ export default function Menu() {
                 Customer Profile
               </DialogTitle>
               <DialogDescription className="text-center text-sm text-gray-600 mt-2">
-                Your account information and visit history
+                Your account information
               </DialogDescription>
             </div>
           </DialogHeader>
@@ -1075,19 +1075,6 @@ export default function Menu() {
                 <div className="flex-1">
                   <p className="text-xs font-medium text-blue-600 uppercase tracking-wide mb-1">Phone Number</p>
                   <p className="text-base font-bold text-gray-900">{customer?.phoneNumber}</p>
-                </div>
-              </div>
-            </div>
-            <div className="relative overflow-hidden group">
-              <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-green-50 to-green-100/50 rounded-xl border-2 border-green-200 shadow-sm hover:shadow-md transition-all">
-                <div className="bg-white p-2.5 rounded-lg shadow-sm">
-                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-green-600 uppercase tracking-wide mb-1">Total Visits</p>
-                  <p className="text-base font-bold text-gray-900">{customer?.visits || 0} {customer?.visits === 1 ? 'Visit' : 'Visits'}</p>
                 </div>
               </div>
             </div>
