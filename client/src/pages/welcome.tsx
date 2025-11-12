@@ -53,6 +53,8 @@ export default function Welcome() {
     if (storedCustomer) {
       const customer = JSON.parse(storedCustomer);
       setExistingCustomer(customer);
+      setCustomerName(customer.name);
+      setPhoneNumber(customer.phoneNumber);
       setShowForm(false);
     }
   }, []);
@@ -253,18 +255,50 @@ export default function Welcome() {
               </button>
             </form>
           ) : (
-            <button
-              onClick={() => setLocation("/menu")}
-              className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
-              style={{
-                padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
-                gap: `${8 * scaleFactor}px`,
-                fontSize: `${14 * scaleFactor}px`,
-              }}
-            >
-              <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
-              <span>EXPLORE OUR MENU</span>
-            </button>
+            <div className="w-full flex flex-col items-center" style={{ gap: `${16 * scaleFactor}px` }}>
+              <div className="bg-white border-2 border-orange-500 rounded-lg w-full text-center" style={{
+                padding: `${16 * scaleFactor}px`,
+                maxWidth: `${280 * scaleFactor}px`,
+              }}>
+                <div className="flex items-center justify-center" style={{ gap: `${8 * scaleFactor}px`, marginBottom: `${8 * scaleFactor}px` }}>
+                  <UserIcon style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} className="text-orange-500" />
+                  <p className="text-orange-500 font-semibold" style={{ fontSize: `${14 * scaleFactor}px` }}>Welcome Back!</p>
+                </div>
+                <p className="text-gray-700 font-medium" style={{ fontSize: `${16 * scaleFactor}px`, marginBottom: `${4 * scaleFactor}px` }}>{customerName}</p>
+                <p className="text-gray-600" style={{ fontSize: `${14 * scaleFactor}px` }}>{phoneNumber}</p>
+                {existingCustomer && (
+                  <p className="text-orange-500 font-medium" style={{ fontSize: `${12 * scaleFactor}px`, marginTop: `${8 * scaleFactor}px` }}>
+                    Visit #{existingCustomer.visits}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => setLocation("/menu")}
+                className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
+                style={{
+                  padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
+                  gap: `${8 * scaleFactor}px`,
+                  fontSize: `${14 * scaleFactor}px`,
+                }}
+              >
+                <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
+                <span>EXPLORE OUR MENU</span>
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('customer');
+                  sessionStorage.clear();
+                  setExistingCustomer(null);
+                  setCustomerName('');
+                  setPhoneNumber('');
+                  setShowForm(true);
+                }}
+                className="text-orange-500 text-sm underline"
+                style={{ fontSize: `${12 * scaleFactor}px` }}
+              >
+                Not you? Click here to log out
+              </button>
+            </div>
           )}
 
           {/* Rating Section */}
