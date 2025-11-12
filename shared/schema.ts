@@ -33,6 +33,15 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface Customer {
+  _id: ObjectId;
+  name: string;
+  phoneNumber: string;
+  visits: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Zod schemas for validation
 export const insertMenuItemSchema = z.object({
   name: z.string().min(1),
@@ -55,6 +64,12 @@ export const insertUserSchema = z.object({
   password: z.string().min(6),
 });
 
+export const insertCustomerSchema = z.object({
+  name: z.string().min(1),
+  phoneNumber: z.string().min(10).max(15),
+});
+
 export type InsertMenuItem = z.infer<typeof insertMenuItemSchema>;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertCustomer = z.infer<typeof insertCustomerSchema>;

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -13,6 +13,7 @@ import {
   MapPin,
   Mic,
   MicOff,
+  User as UserIcon,
 } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
 import { useLocation } from "wouter";
@@ -20,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import DishCard from "@/components/dish-card";
-import type { MenuItem } from "@shared/schema";
+import type { MenuItem, Customer } from "@shared/schema";
 
 // Type declarations for Speech Recognition API
 declare global {
@@ -144,6 +145,7 @@ export default function Menu() {
   const [isListening, setIsListening] = useState(false);
   const [speechRecognition, setSpeechRecognition] = useState(null);
   const [voiceSearchSupported, setVoiceSearchSupported] = useState(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   const { data: menuItems = [], isLoading } = useQuery<MenuItem[]>({
     queryKey: ["/api/menu-items"],
@@ -199,6 +201,38 @@ export default function Menu() {
     } else {
       setVoiceSearchSupported(false);
     }
+  }, []);
+
+  // Load customer data and increment visit counter
+  useEffect(() => {
+    const loadCustomer = async () => {
+      const storedCustomer = localStorage.getItem('customer');
+      if (storedCustomer) {
+        const customerData = JSON.parse(storedCustomer);
+        setCustomer(customerData);
+        
+        const visitKey = `visit_incremented_${customerData.phoneNumber}`;
+        const visitIncremented = sessionStorage.getItem(visitKey);
+        
+        if (!visitIncremented) {
+          sessionStorage.setItem(visitKey, 'true');
+          try {
+            const response = await fetch(`/api/customers/visit/${customerData.phoneNumber}`, {
+              method: 'POST',
+            });
+            if (response.ok) {
+              const updatedCustomer = await response.json();
+              setCustomer(updatedCustomer);
+              localStorage.setItem('customer', JSON.stringify(updatedCustomer));
+            }
+          } catch (error) {
+            console.error("Error incrementing customer visits:", error);
+          }
+        }
+      }
+    };
+
+    loadCustomer();
   }, []);
 
   // Voice Search Function
@@ -316,7 +350,16 @@ export default function Menu() {
             </div>
 
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
-              {/* Instagram Button was here we removed it*/}
+              {/* Customer Profile */}
+              {customer && (
+                <div className="flex items-center space-x-2 bg-orange-50 border-2 border-orange-500 rounded-full px-3 py-1">
+                  <UserIcon className="h-4 w-4 text-orange-500" />
+                  <div className="flex flex-col">
+                    <span className="text-xs font-semibold text-orange-600">{customer.name}</span>
+                    <span className="text-xs text-orange-500">Visits: {customer.visits}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Hamburger Menu Button */}
               <Button

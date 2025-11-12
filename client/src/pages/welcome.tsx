@@ -1,9 +1,10 @@
-import { Utensils, Instagram, Facebook, Youtube, Star } from "lucide-react";
+import { Utensils, Instagram, Facebook, Youtube, Star, User as UserIcon } from "lucide-react";
 import { useLocation } from "wouter";
 import { useWelcomeAudio } from "../hooks/useWelcomeAudio";
 import { MediaPreloader } from "../components/media-preloader";
 import { useState, useEffect, useCallback } from "react";
 import backgroundImage from "/background.png";
+import type { Customer } from "@shared/schema";
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
@@ -11,6 +12,11 @@ export default function Welcome() {
   const [mediaReady, setMediaReady] = useState(false);
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 });
   const [scaleFactor, setScaleFactor] = useState(1);
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [existingCustomer, setExistingCustomer] = useState<Customer | null>(null);
+  const [showForm, setShowForm] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Detect screen size and calculate scale factor
   useEffect(() => {
@@ -40,6 +46,77 @@ export default function Welcome() {
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
+
+  // Check localStorage for existing customer data
+  useEffect(() => {
+    const storedCustomer = localStorage.getItem('customer');
+    if (storedCustomer) {
+      const customer = JSON.parse(storedCustomer);
+      setExistingCustomer(customer);
+      setShowForm(false);
+    }
+  }, []);
+
+  // Check if customer exists when phone number is entered
+  const checkExistingCustomer = useCallback(async (phone: string) => {
+    if (phone.length >= 10) {
+      try {
+        const response = await fetch(`/api/customers/phone/${phone}`);
+        if (response.ok) {
+          const customer = await response.json();
+          setExistingCustomer(customer);
+          setCustomerName(customer.name);
+          localStorage.setItem('customer', JSON.stringify(customer));
+        } else {
+          setExistingCustomer(null);
+        }
+      } catch (error) {
+        console.error("Error checking customer:", error);
+      }
+    }
+  }, []);
+
+  // Handle phone number change
+  const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const phone = e.target.value.replace(/\D/g, '').slice(0, 15);
+    setPhoneNumber(phone);
+    if (phone.length >= 10) {
+      checkExistingCustomer(phone);
+    } else {
+      setExistingCustomer(null);
+    }
+  }, [checkExistingCustomer]);
+
+  // Handle form submission
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customerName.trim() || phoneNumber.length < 10) {
+      alert("Please enter your name and a valid phone number");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      let customer;
+      if (existingCustomer) {
+        customer = existingCustomer;
+      } else {
+        const response = await fetch('/api/customers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: customerName, phoneNumber }),
+        });
+        customer = await response.json();
+      }
+      localStorage.setItem('customer', JSON.stringify(customer));
+      setLocation("/menu");
+    } catch (error) {
+      console.error("Error submitting customer data:", error);
+      alert("Failed to register. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [customerName, phoneNumber, existingCustomer, setLocation]);
 
   // Social media click handlers
   const handleSocialClick = useCallback((url: string) => {
@@ -124,19 +201,71 @@ export default function Welcome() {
             </button>
           </div>
 
-          {/* Explore Menu Button */}
-          <button
-            onClick={() => setLocation("/menu")}
-            className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
-            style={{
-              padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
-              gap: `${8 * scaleFactor}px`,
-              fontSize: `${14 * scaleFactor}px`,
-            }}
-          >
-            <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
-            <span>EXPLORE OUR MENU</span>
-          </button>
+          {/* Customer Registration Form or Explore Menu Button */}
+          {showForm ? (
+            <form onSubmit={handleSubmit} className="w-full flex flex-col items-center" style={{ gap: `${12 * scaleFactor}px` }}>
+              <input
+                type="text"
+                placeholder="Enter Your Name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                disabled={!!existingCustomer}
+                className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-100"
+                style={{
+                  fontSize: `${14 * scaleFactor}px`,
+                  padding: `${10 * scaleFactor}px ${16 * scaleFactor}px`,
+                  maxWidth: `${280 * scaleFactor}px`,
+                  width: '100%',
+                }}
+                required
+              />
+              <input
+                type="tel"
+                placeholder="Enter Phone Number"
+                value={phoneNumber}
+                onChange={handlePhoneChange}
+                className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300"
+                style={{
+                  fontSize: `${14 * scaleFactor}px`,
+                  padding: `${10 * scaleFactor}px ${16 * scaleFactor}px`,
+                  maxWidth: `${280 * scaleFactor}px`,
+                  width: '100%',
+                }}
+                required
+              />
+              {existingCustomer && (
+                <p className="text-green-600 font-medium" style={{ fontSize: `${12 * scaleFactor}px` }}>
+                  ✓ User Present! Welcome back, {existingCustomer.name}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={isSubmitting || !customerName.trim() || phoneNumber.length < 10}
+                className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
+                  gap: `${8 * scaleFactor}px`,
+                  fontSize: `${14 * scaleFactor}px`,
+                }}
+              >
+                <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
+                <span>{isSubmitting ? 'PLEASE WAIT...' : 'EXPLORE OUR MENU'}</span>
+              </button>
+            </form>
+          ) : (
+            <button
+              onClick={() => setLocation("/menu")}
+              className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
+              style={{
+                padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
+                gap: `${8 * scaleFactor}px`,
+                fontSize: `${14 * scaleFactor}px`,
+              }}
+            >
+              <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
+              <span>EXPLORE OUR MENU</span>
+            </button>
+          )}
 
           {/* Rating Section */}
           <div className="text-center">

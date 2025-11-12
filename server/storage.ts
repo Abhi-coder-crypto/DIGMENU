@@ -332,7 +332,7 @@
 // const connectionString = "mongodb+srv://airavatatechnologiesprojects:8tJ6v8oTyQE1AwLV@mingsdb.mmjpnwc.mongodb.net/?retryWrites=true&w=majority&appName=MINGSDB";
 // export const storage = new MongoStorage(connectionString);
 import { MongoClient, Db, Collection, ObjectId } from "mongodb";
-import { type User, type InsertUser, type MenuItem, type InsertMenuItem, type CartItem, type InsertCartItem } from "@shared/schema";
+import { type User, type InsertUser, type MenuItem, type InsertMenuItem, type CartItem, type InsertCartItem, type Customer, type InsertCustomer } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -349,6 +349,11 @@ export interface IStorage {
   addToCart(item: InsertCartItem): Promise<CartItem>;
   removeFromCart(id: string): Promise<void>;
   clearCart(): Promise<void>;
+
+  getCustomerByPhone(phoneNumber: string): Promise<Customer | undefined>;
+  createCustomer(customer: InsertCustomer): Promise<Customer>;
+  incrementCustomerVisits(phoneNumber: string): Promise<Customer | undefined>;
+  getAllCustomers(): Promise<Customer[]>;
 }
 
 export class MongoStorage implements IStorage {
@@ -357,6 +362,7 @@ export class MongoStorage implements IStorage {
   private categoryCollections: Map<string, Collection<MenuItem>>;
   private cartItemsCollection: Collection<CartItem>;
   private usersCollection: Collection<User>;
+  private customersCollection: Collection<Customer>;
   private restaurantId: ObjectId;
 
   // Define available categories - these match menu.tsx categories
@@ -420,6 +426,7 @@ export class MongoStorage implements IStorage {
 
     this.cartItemsCollection = this.db.collection("cartitems");
     this.usersCollection = this.db.collection("users");
+    this.customersCollection = this.db.collection("customers");
     this.restaurantId = new ObjectId("6874cff2a880250859286de6");
   }
 
@@ -630,6 +637,64 @@ export class MongoStorage implements IStorage {
     } catch (error) {
       console.error("Error clearing cart:", error);
       throw error;
+    }
+  }
+
+  async getCustomerByPhone(phoneNumber: string): Promise<Customer | undefined> {
+    try {
+      const customer = await this.customersCollection.findOne({ phoneNumber });
+      return customer || undefined;
+    } catch (error) {
+      console.error("Error getting customer by phone:", error);
+      return undefined;
+    }
+  }
+
+  async createCustomer(insertCustomer: InsertCustomer): Promise<Customer> {
+    try {
+      const now = new Date();
+      const customer: Omit<Customer, '_id'> = {
+        ...insertCustomer,
+        visits: 0,
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      const result = await this.customersCollection.insertOne(customer as Customer);
+      return {
+        _id: result.insertedId,
+        ...customer,
+      } as Customer;
+    } catch (error) {
+      console.error("Error creating customer:", error);
+      throw error;
+    }
+  }
+
+  async incrementCustomerVisits(phoneNumber: string): Promise<Customer | undefined> {
+    try {
+      const result = await this.customersCollection.findOneAndUpdate(
+        { phoneNumber },
+        {
+          $inc: { visits: 1 },
+          $set: { updatedAt: new Date() }
+        },
+        { returnDocument: 'after' }
+      );
+      return result || undefined;
+    } catch (error) {
+      console.error("Error incrementing customer visits:", error);
+      return undefined;
+    }
+  }
+
+  async getAllCustomers(): Promise<Customer[]> {
+    try {
+      const customers = await this.customersCollection.find({}).sort({ visits: -1 }).toArray();
+      return customers;
+    } catch (error) {
+      console.error("Error getting all customers:", error);
+      return [];
     }
   }
 
