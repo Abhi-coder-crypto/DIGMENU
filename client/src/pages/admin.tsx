@@ -68,8 +68,8 @@ export default function Admin() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-4">
-        <div className="text-orange-600 text-xl">Loading...</div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+        <div className="text-gray-700 text-xl">Loading...</div>
       </div>
     );
   }
@@ -169,27 +169,28 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-100/50 to-orange-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-2xl p-6 md:p-8 mb-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+        <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl shadow-lg p-6 md:p-8 mb-6 relative overflow-hidden border border-slate-600">
+          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
           <div className="relative flex flex-wrap justify-between items-center gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
-                  <ChefHat className="h-8 w-8 text-white" />
+                <div className="bg-orange-500/20 backdrop-blur-sm p-2 rounded-lg border border-orange-500/30">
+                  <ChefHat className="h-8 w-8 text-orange-400" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white">
                   Customer Loyalty Dashboard
                 </h1>
               </div>
-              <p className="text-orange-100 text-sm md:text-base">Track and manage your customer relationships</p>
+              <p className="text-slate-300 text-sm md:text-base">Track and manage your customer relationships</p>
             </div>
             <Button 
               onClick={handleLogout} 
               variant="outline"
-              className="bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 font-semibold"
+              className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white hover:bg-white/20 font-semibold transition-all"
+              data-testid="button-logout"
             >
               Logout
             </Button>
@@ -198,52 +199,52 @@ export default function Admin() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
-          <div className="bg-gradient-to-br from-white to-orange-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-orange-200/50">
+          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-orange-600 uppercase tracking-wide mb-2">Total Customers</p>
-                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">{customers.length}</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Total Customers</p>
+                <p className="text-4xl md:text-5xl font-bold text-gray-900">{customers.length}</p>
               </div>
-              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-xl shadow-lg">
-                <User className="h-10 w-10 text-white" />
+              <div className="bg-orange-500 p-4 rounded-xl">
+                <User className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-blue-200/50">
+          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Total Visits</p>
-                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Total Visits</p>
+                <p className="text-4xl md:text-5xl font-bold text-gray-900">
                   {customers.reduce((sum, c) => sum + c.visits, 0)}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl shadow-lg">
-                <TrendingUp className="h-10 w-10 text-white" />
+              <div className="bg-blue-500 p-4 rounded-xl">
+                <TrendingUp className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
-          <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-green-200/50">
+          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-green-600 uppercase tracking-wide mb-2">Avg Visits/Customer</p>
-                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Avg Visits/Customer</p>
+                <p className="text-4xl md:text-5xl font-bold text-gray-900">
                   {customers.length > 0 
                     ? (customers.reduce((sum, c) => sum + c.visits, 0) / customers.length).toFixed(1)
                     : '0'}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl shadow-lg">
-                <Calendar className="h-10 w-10 text-white" />
+              <div className="bg-green-500 p-4 rounded-xl">
+                <Calendar className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Customer List Table */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+          <div className="bg-gradient-to-r from-slate-700 to-slate-600 p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
+              <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/20">
                 <User className="h-6 w-6 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white">Customer List</h2>
@@ -252,25 +253,25 @@ export default function Admin() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gradient-to-r from-orange-50 to-orange-100/50 border-b-2 border-orange-200">
-                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                     Phone Number
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                     Visits
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                     First Visit
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                     Last Visit
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-orange-100">
+              <tbody className="bg-white divide-y divide-gray-200">
                 {customers.map((customer, index) => {
                   const getVisitBadgeColor = (visits: number) => {
                     if (visits >= 10) return "bg-gradient-to-r from-purple-500 to-purple-600 text-white";
@@ -282,11 +283,11 @@ export default function Admin() {
                   return (
                     <tr 
                       key={customer._id.toString()} 
-                      className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200 group"
+                      className="hover:bg-gray-50 transition-all duration-200 group"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
+                          <div className="bg-orange-500 p-2 rounded-lg">
                             <User className="h-4 w-4 text-white" />
                           </div>
                           <span className="text-sm font-semibold text-gray-900">{customer.name}</span>
@@ -294,7 +295,7 @@ export default function Admin() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-orange-500" />
+                          <Phone className="h-4 w-4 text-gray-500" />
                           <span className="text-sm font-medium text-gray-700">{customer.phoneNumber}</span>
                         </div>
                       </td>
@@ -328,8 +329,8 @@ export default function Admin() {
             {customers.length === 0 && (
               <div className="text-center py-16">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="bg-orange-100 p-6 rounded-full">
-                    <User className="h-12 w-12 text-orange-400" />
+                  <div className="bg-gray-100 p-6 rounded-full">
+                    <User className="h-12 w-12 text-gray-400" />
                   </div>
                   <div>
                     <p className="text-xl font-semibold text-gray-800 mb-1">No customers yet</p>
