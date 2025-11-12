@@ -284,19 +284,6 @@ export default function Welcome() {
                 <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
                 <span>EXPLORE OUR MENU</span>
               </button>
-              <button
-                onClick={() => {
-                  sessionStorage.clear();
-                  setExistingCustomer(null);
-                  setCustomerName('');
-                  setPhoneNumber('');
-                  setShowForm(true);
-                }}
-                className="text-orange-500 text-sm underline"
-                style={{ fontSize: `${12 * scaleFactor}px` }}
-              >
-                Not you? Click here to log out
-              </button>
             </div>
           )}
 
