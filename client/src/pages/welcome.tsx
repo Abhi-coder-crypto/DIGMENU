@@ -1,10 +1,16 @@
-import { Utensils, Instagram, Facebook, Youtube, Star, User as UserIcon } from "lucide-react";
+import { Utensils, Instagram, Facebook, Youtube, Star } from "lucide-react";
 import { useLocation } from "wouter";
 import { useWelcomeAudio } from "../hooks/useWelcomeAudio";
 import { MediaPreloader } from "../components/media-preloader";
 import { useState, useEffect, useCallback } from "react";
 import backgroundImage from "/background.png";
 import type { Customer } from "@shared/schema";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Welcome() {
   const [, setLocation] = useLocation();
@@ -15,8 +21,9 @@ export default function Welcome() {
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [existingCustomer, setExistingCustomer] = useState<Customer | null>(null);
-  const [showForm, setShowForm] = useState(true);
+  const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState("");
 
   // Detect screen size and calculate scale factor
   useEffect(() => {
@@ -55,7 +62,10 @@ export default function Welcome() {
       setExistingCustomer(customer);
       setCustomerName(customer.name);
       setPhoneNumber(customer.phoneNumber);
-      setShowForm(false);
+      setWelcomeMessage(`Welcome back ${customer.name}`);
+      setShowDialog(false);
+    } else {
+      setShowDialog(true);
     }
   }, []);
 
@@ -111,6 +121,8 @@ export default function Welcome() {
         customer = await response.json();
       }
       sessionStorage.setItem('customer', JSON.stringify(customer));
+      setWelcomeMessage(`Welcome back ${customer.name}`);
+      setShowDialog(false);
       setLocation("/menu");
     } catch (error) {
       console.error("Error submitting customer data:", error);
@@ -203,89 +215,20 @@ export default function Welcome() {
             </button>
           </div>
 
-          {/* Customer Registration Form or Explore Menu Button */}
-          {showForm ? (
-            <form onSubmit={handleSubmit} className="w-full flex flex-col items-center" style={{ gap: `${12 * scaleFactor}px` }}>
-              <input
-                type="text"
-                placeholder="Enter Your Name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                disabled={!!existingCustomer}
-                className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-100"
-                style={{
-                  fontSize: `${14 * scaleFactor}px`,
-                  padding: `${10 * scaleFactor}px ${16 * scaleFactor}px`,
-                  maxWidth: `${280 * scaleFactor}px`,
-                  width: '100%',
-                }}
-                required
-              />
-              <input
-                type="tel"
-                placeholder="Enter Phone Number"
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300"
-                style={{
-                  fontSize: `${14 * scaleFactor}px`,
-                  padding: `${10 * scaleFactor}px ${16 * scaleFactor}px`,
-                  maxWidth: `${280 * scaleFactor}px`,
-                  width: '100%',
-                }}
-                required
-              />
-              {existingCustomer && (
-                <p className="text-green-600 font-medium" style={{ fontSize: `${12 * scaleFactor}px` }}>
-                  ✓ User Present! Welcome back, {existingCustomer.name}
-                </p>
-              )}
-              <button
-                type="submit"
-                disabled={isSubmitting || !customerName.trim() || phoneNumber.length < 10}
-                className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
-                  gap: `${8 * scaleFactor}px`,
-                  fontSize: `${14 * scaleFactor}px`,
-                }}
-              >
-                <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
-                <span>{isSubmitting ? 'PLEASE WAIT...' : 'EXPLORE OUR MENU'}</span>
-              </button>
-            </form>
-          ) : (
-            <div className="w-full flex flex-col items-center" style={{ gap: `${16 * scaleFactor}px` }}>
-              <div className="bg-white border-2 border-orange-500 rounded-lg w-full text-center" style={{
-                padding: `${16 * scaleFactor}px`,
-                maxWidth: `${280 * scaleFactor}px`,
-              }}>
-                <div className="flex items-center justify-center" style={{ gap: `${8 * scaleFactor}px`, marginBottom: `${8 * scaleFactor}px` }}>
-                  <UserIcon style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} className="text-orange-500" />
-                  <p className="text-orange-500 font-semibold" style={{ fontSize: `${14 * scaleFactor}px` }}>Welcome Back!</p>
-                </div>
-                <p className="text-gray-700 font-medium" style={{ fontSize: `${16 * scaleFactor}px`, marginBottom: `${4 * scaleFactor}px` }}>{customerName}</p>
-                <p className="text-gray-600" style={{ fontSize: `${14 * scaleFactor}px` }}>{phoneNumber}</p>
-                {existingCustomer && (
-                  <p className="text-orange-500 font-medium" style={{ fontSize: `${12 * scaleFactor}px`, marginTop: `${8 * scaleFactor}px` }}>
-                    Visit #{existingCustomer.visits}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={() => setLocation("/menu")}
-                className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
-                style={{
-                  padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
-                  gap: `${8 * scaleFactor}px`,
-                  fontSize: `${14 * scaleFactor}px`,
-                }}
-              >
-                <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
-                <span>EXPLORE OUR MENU</span>
-              </button>
-            </div>
-          )}
+          {/* Explore Menu Button */}
+          <button
+            onClick={() => setLocation("/menu")}
+            className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
+            style={{
+              padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
+              gap: `${8 * scaleFactor}px`,
+              fontSize: `${14 * scaleFactor}px`,
+            }}
+            data-testid="button-explore-menu"
+          >
+            <Utensils style={{ width: `${20 * scaleFactor}px`, height: `${20 * scaleFactor}px` }} />
+            <span>EXPLORE OUR MENU</span>
+          </button>
 
           {/* Rating Section */}
           <div className="text-center">
@@ -370,23 +313,86 @@ export default function Welcome() {
             </div>
           </div>
 
-          {/* Developer Credit */}
-          <div
-            className="text-center text-gray-600"
-            style={{ fontSize: `${10 * scaleFactor}px` }}
-          >
-            <p>Developed By</p>
-            <p
-              className="text-orange-500 font-medium cursor-pointer no-underline"
-              onClick={() => window.open("http://www.airavatatechnologies.com", "_blank")}
-              style={{ textDecoration: 'none' }}
-            >
-              AIRAVATA TECHNOLOGIES
-            </p>
+          {/* Footer - Developer Credit and Welcome Message */}
+          <div className="w-full flex justify-between items-center" style={{ fontSize: `${10 * scaleFactor}px`, gap: `${16 * scaleFactor}px` }}>
+            {/* Welcome Message (Left) */}
+            <div className="text-left flex-1">
+              {welcomeMessage && (
+                <p className="text-orange-500 font-medium" data-testid="text-welcome-message">
+                  {welcomeMessage}
+                </p>
+              )}
+            </div>
+            
+            {/* Developer Credit (Right) */}
+            <div className="text-right text-gray-600 flex-1">
+              <p>Developed By</p>
+              <p
+                className="text-orange-500 font-medium cursor-pointer no-underline"
+                onClick={() => window.open("http://www.airavatatechnologies.com", "_blank")}
+                style={{ textDecoration: 'none' }}
+              >
+                AIRAVATA TECHNOLOGIES
+              </p>
+            </div>
           </div>
 
         </div>
       </div>
+
+      {/* Customer Registration Dialog - Non-dismissible until registration complete */}
+      <Dialog open={showDialog} onOpenChange={(open) => {
+        if (!open && !existingCustomer && !customerName) {
+          return;
+        }
+        setShowDialog(open);
+      }}>
+        <DialogContent 
+          className="bg-white" 
+          style={{ maxWidth: `${350 * scaleFactor}px` }}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-center text-orange-500">Welcome to Ming's</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-4">
+            <input
+              type="text"
+              placeholder="Enter Your Name"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              disabled={!!existingCustomer}
+              className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-100 w-full"
+              data-testid="input-name"
+              required
+            />
+            <input
+              type="tel"
+              placeholder="Enter Phone Number"
+              value={phoneNumber}
+              onChange={handlePhoneChange}
+              className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 w-full"
+              data-testid="input-phone"
+              required
+            />
+            {existingCustomer && (
+              <p className="text-green-600 font-medium text-sm" data-testid="text-returning-customer">
+                ✓ Welcome back, {existingCustomer.name}!
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={isSubmitting || !customerName.trim() || phoneNumber.length < 10}
+              className="bg-orange-500 text-white font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 gap-2"
+              data-testid="button-submit-customer"
+            >
+              <Utensils className="w-5 h-5" />
+              <span>{isSubmitting ? 'PLEASE WAIT...' : 'CONTINUE'}</span>
+            </button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
