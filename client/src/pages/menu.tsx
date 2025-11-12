@@ -1032,26 +1032,63 @@ export default function Menu() {
 
       {/* Customer Profile Dialog */}
       <Dialog open={showProfileDialog} onOpenChange={setShowProfileDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-orange-600 text-xl">Customer Profile</DialogTitle>
-            <DialogDescription>
-              Your account information
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <UserIcon className="h-5 w-5 text-orange-500" />
-              <div>
-                <p className="text-xs text-gray-500">Name</p>
-                <p className="text-sm font-semibold text-gray-900">{customer?.name}</p>
+        <DialogContent className="sm:max-w-md bg-gradient-to-br from-white via-orange-50/20 to-white border-2 border-orange-200 shadow-2xl">
+          <DialogHeader className="space-y-4 pb-2">
+            <div className="flex justify-center">
+              <div className="relative">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-full shadow-lg">
+                  <UserIcon className="h-10 w-10 text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 bg-green-500 rounded-full p-1.5 border-2 border-white shadow-md">
+                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
-              <Phone className="h-5 w-5 text-orange-500" />
-              <div>
-                <p className="text-xs text-gray-500">Phone Number</p>
-                <p className="text-sm font-semibold text-gray-900">{customer?.phoneNumber}</p>
+            <div>
+              <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+                Customer Profile
+              </DialogTitle>
+              <DialogDescription className="text-center text-sm text-gray-600 mt-2">
+                Your account information and visit history
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+          <div className="space-y-3 py-4">
+            <div className="relative overflow-hidden group">
+              <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-all">
+                <div className="bg-white p-2.5 rounded-lg shadow-sm">
+                  <UserIcon className="h-6 w-6 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-orange-600 uppercase tracking-wide mb-1">Full Name</p>
+                  <p className="text-base font-bold text-gray-900">{customer?.name}</p>
+                </div>
+              </div>
+            </div>
+            <div className="relative overflow-hidden group">
+              <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-md transition-all">
+                <div className="bg-white p-2.5 rounded-lg shadow-sm">
+                  <Phone className="h-6 w-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-blue-600 uppercase tracking-wide mb-1">Phone Number</p>
+                  <p className="text-base font-bold text-gray-900">{customer?.phoneNumber}</p>
+                </div>
+              </div>
+            </div>
+            <div className="relative overflow-hidden group">
+              <div className="flex items-start space-x-4 p-4 bg-gradient-to-r from-green-50 to-green-100/50 rounded-xl border-2 border-green-200 shadow-sm hover:shadow-md transition-all">
+                <div className="bg-white p-2.5 rounded-lg shadow-sm">
+                  <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-green-600 uppercase tracking-wide mb-1">Total Visits</p>
+                  <p className="text-base font-bold text-gray-900">{customer?.visits || 0} {customer?.visits === 1 ? 'Visit' : 'Visits'}</p>
+                </div>
               </div>
             </div>
           </div>

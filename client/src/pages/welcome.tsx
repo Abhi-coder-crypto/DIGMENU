@@ -366,47 +366,66 @@ export default function Welcome() {
       {/* Customer Registration Dialog */}
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent 
-          className="bg-white" 
-          style={{ maxWidth: `${350 * scaleFactor}px` }}
+          className="bg-gradient-to-br from-white via-orange-50/30 to-white border-2 border-orange-200 shadow-2xl" 
+          style={{ maxWidth: `${380 * scaleFactor}px` }}
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
-          <DialogHeader>
-            <DialogTitle className="text-center text-orange-500">Welcome to Ming's</DialogTitle>
+          <DialogHeader className="space-y-3 pb-2">
+            <div className="flex justify-center">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 rounded-full shadow-lg">
+                <Utensils className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+              Welcome to Ming's
+            </DialogTitle>
+            <p className="text-center text-sm text-gray-600">
+              Please share your details to get started
+            </p>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-4">
-            <input
-              type="text"
-              placeholder="Enter Your Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-              disabled={!!existingCustomer}
-              className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-100 w-full"
-              data-testid="input-name"
-              required
-            />
-            <input
-              type="tel"
-              placeholder="Enter Phone Number"
-              value={phoneNumber}
-              onChange={handlePhoneChange}
-              className="bg-white text-gray-700 border-2 border-orange-500 rounded-lg px-4 py-2 text-center focus:outline-none focus:ring-2 focus:ring-orange-300 w-full"
-              data-testid="input-phone"
-              required
-            />
+          <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-5 pt-2">
+            <div className="w-full space-y-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Enter Your Name"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  disabled={!!existingCustomer}
+                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl px-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gray-100 shadow-sm transition-all placeholder:text-gray-400"
+                  data-testid="input-name"
+                  required
+                />
+              </div>
+              <div className="relative">
+                <input
+                  type="tel"
+                  placeholder="Enter Phone Number"
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl px-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 shadow-sm transition-all placeholder:text-gray-400"
+                  data-testid="input-phone"
+                  required
+                />
+              </div>
+            </div>
             {existingCustomer && (
-              <p className="text-green-600 font-medium text-sm" data-testid="text-returning-customer">
-                ✓ Welcome back, {existingCustomer.name}!
-              </p>
+              <div className="w-full bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-3 shadow-sm" data-testid="text-returning-customer">
+                <p className="text-green-700 font-semibold text-sm text-center flex items-center justify-center gap-2">
+                  <span className="text-lg">✓</span>
+                  Welcome back, {existingCustomer.name}!
+                </p>
+              </div>
             )}
             <button
               type="submit"
               disabled={isSubmitting || !customerName.trim() || phoneNumber.length < 10}
-              className="bg-orange-500 text-white font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-600 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed px-8 py-3 gap-2"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed px-8 py-4 gap-2.5 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
               data-testid="button-submit-customer"
             >
               <Utensils className="w-5 h-5" />
-              <span>{isSubmitting ? 'PLEASE WAIT...' : 'CONTINUE'}</span>
+              <span className="text-base">{isSubmitting ? 'PLEASE WAIT...' : 'CONTINUE TO MENU'}</span>
             </button>
           </form>
         </DialogContent>
