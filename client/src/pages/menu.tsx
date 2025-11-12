@@ -536,6 +536,31 @@ export default function Menu() {
         )}
       </header>
 
+      {/* Personalized Welcome Message Banner */}
+      {customer && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-orange-50 to-yellow-50 border-b-2 border-orange-200"
+        >
+          <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 text-center">
+            <p 
+              className="text-base sm:text-lg md:text-xl font-bold text-orange-600"
+              data-testid="text-menu-welcome-message"
+            >
+              {customer.visits === 1 
+                ? `Welcome ${customer.name}, for your first visit` 
+                : `Welcome back ${customer.name}`}
+            </p>
+            {customer.visits > 1 && (
+              <p className="text-xs sm:text-sm text-orange-500 mt-1">
+                Visit #{customer.visits} - Thank you for returning!
+              </p>
+            )}
+          </div>
+        </motion.div>
+      )}
+
       {/* Search Bar with Filter and Voice Search */}
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         <div className="flex justify-center">
