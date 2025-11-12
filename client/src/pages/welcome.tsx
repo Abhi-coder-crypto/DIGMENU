@@ -24,6 +24,8 @@ export default function Welcome() {
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   // Detect screen size and calculate scale factor
   useEffect(() => {
@@ -96,11 +98,30 @@ export default function Welcome() {
     }
   }, []);
 
-  // Handle phone number change
+  // Handle name change with validation
+  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    setCustomerName(name);
+    
+    if (name && !/^[a-zA-Z\s]+$/.test(name)) {
+      setNameError("Name should contain only alphabets and spaces");
+    } else {
+      setNameError("");
+    }
+  }, []);
+
+  // Handle phone number change with validation
   const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const phone = e.target.value.replace(/\D/g, '').slice(0, 15);
+    const phone = e.target.value.replace(/\D/g, '').slice(0, 10);
     setPhoneNumber(phone);
-    if (phone.length >= 10) {
+    
+    if (phone && phone.length < 10) {
+      setPhoneError("Phone number must be 10 digits");
+    } else {
+      setPhoneError("");
+    }
+    
+    if (phone.length === 10) {
       checkExistingCustomer(phone);
     } else {
       setExistingCustomer(null);
@@ -110,8 +131,26 @@ export default function Welcome() {
   // Handle form submission
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim() || phoneNumber.length < 10) {
-      alert("Please enter your name and a valid phone number");
+    
+    let hasError = false;
+    
+    if (!customerName.trim()) {
+      setNameError("Name is required");
+      hasError = true;
+    } else if (!/^[a-zA-Z\s]+$/.test(customerName)) {
+      setNameError("Name should contain only alphabets and spaces");
+      hasError = true;
+    }
+    
+    if (!phoneNumber) {
+      setPhoneError("Phone number is required");
+      hasError = true;
+    } else if (phoneNumber.length !== 10) {
+      setPhoneError("Phone number must be exactly 10 digits");
+      hasError = true;
+    }
+    
+    if (hasError) {
       return;
     }
 
@@ -396,12 +435,15 @@ export default function Welcome() {
                   type="text"
                   placeholder="Enter Your Name"
                   value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  onChange={handleNameChange}
                   disabled={!!existingCustomer}
-                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gradient-to-r disabled:from-gray-50 disabled:to-gray-100 disabled:border-gray-300 shadow-sm transition-all placeholder:text-gray-400 font-medium"
+                  className={`w-full bg-white text-gray-800 border-2 ${nameError ? 'border-red-500' : 'border-orange-300'} rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gradient-to-r disabled:from-gray-50 disabled:to-gray-100 disabled:border-gray-300 shadow-sm transition-all placeholder:text-gray-400 font-medium`}
                   data-testid="input-name"
                   required
                 />
+                {nameError && (
+                  <p className="text-red-500 text-xs mt-1 text-center" data-testid="error-name">{nameError}</p>
+                )}
               </div>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
@@ -411,13 +453,16 @@ export default function Welcome() {
                 </div>
                 <input
                   type="tel"
-                  placeholder="Enter Phone Number"
+                  placeholder="Enter 10 Digit Phone Number"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
-                  className="w-full bg-white text-gray-800 border-2 border-orange-300 rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 shadow-sm transition-all placeholder:text-gray-400 font-medium"
+                  className={`w-full bg-white text-gray-800 border-2 ${phoneError ? 'border-red-500' : 'border-orange-300'} rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 shadow-sm transition-all placeholder:text-gray-400 font-medium`}
                   data-testid="input-phone"
                   required
                 />
+                {phoneError && (
+                  <p className="text-red-500 text-xs mt-1 text-center" data-testid="error-phone">{phoneError}</p>
+                )}
               </div>
             </div>
             {existingCustomer && (
