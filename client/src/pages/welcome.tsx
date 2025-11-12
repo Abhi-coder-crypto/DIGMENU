@@ -363,13 +363,8 @@ export default function Welcome() {
         </div>
       </div>
 
-      {/* Customer Registration Dialog - Non-dismissible until registration complete */}
-      <Dialog open={showDialog} onOpenChange={(open) => {
-        if (!open && !existingCustomer && !customerName) {
-          return;
-        }
-        setShowDialog(open);
-      }}>
+      {/* Customer Registration Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent 
           className="bg-white" 
           style={{ maxWidth: `${350 * scaleFactor}px` }}
