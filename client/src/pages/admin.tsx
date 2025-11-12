@@ -169,27 +169,28 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl shadow-lg p-6 md:p-8 mb-6 relative overflow-hidden border border-slate-600">
-          <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent"></div>
+        <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-2xl shadow-2xl p-6 md:p-8 mb-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/5"></div>
           <div className="relative flex flex-wrap justify-between items-center gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-orange-500/20 backdrop-blur-sm p-2 rounded-lg border border-orange-500/30">
-                  <ChefHat className="h-8 w-8 text-orange-400" />
+                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl border border-white/30 shadow-lg">
+                  <ChefHat className="h-8 w-8 text-white" />
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
                   Customer Loyalty Dashboard
                 </h1>
               </div>
-              <p className="text-slate-300 text-sm md:text-base">Track and manage your customer relationships</p>
+              <p className="text-white/95 text-sm md:text-base font-medium">Track and manage your customer relationships</p>
             </div>
             <Button 
               onClick={handleLogout} 
               variant="outline"
-              className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white hover:bg-white/20 font-semibold transition-all"
+              className="bg-white/20 backdrop-blur-md border-2 border-white/40 text-white hover:bg-white/30 font-semibold transition-all shadow-lg"
               data-testid="button-logout"
             >
               Logout
@@ -199,41 +200,44 @@ export default function Admin() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
-          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-br from-white to-orange-50 rounded-xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-orange-100/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -mr-16 -mt-16"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Total Customers</p>
+                <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-2">Total Customers</p>
                 <p className="text-4xl md:text-5xl font-bold text-gray-900">{customers.length}</p>
               </div>
-              <div className="bg-orange-500 p-4 rounded-xl">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-xl shadow-lg">
                 <User className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-blue-100/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Total Visits</p>
+                <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">Total Visits</p>
                 <p className="text-4xl md:text-5xl font-bold text-gray-900">
                   {customers.reduce((sum, c) => sum + c.visits, 0)}
                 </p>
               </div>
-              <div className="bg-blue-500 p-4 rounded-xl">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl shadow-lg">
                 <TrendingUp className="h-8 w-8 text-white" />
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 border border-gray-200">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-br from-white to-green-50 rounded-xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-green-100/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full -mr-16 -mt-16"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Avg Visits/Customer</p>
+                <p className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">Avg Visits/Customer</p>
                 <p className="text-4xl md:text-5xl font-bold text-gray-900">
                   {customers.length > 0 
                     ? (customers.reduce((sum, c) => sum + c.visits, 0) / customers.length).toFixed(1)
                     : '0'}
                 </p>
               </div>
-              <div className="bg-green-500 p-4 rounded-xl">
+              <div className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl shadow-lg">
                 <Calendar className="h-8 w-8 text-white" />
               </div>
             </div>
@@ -241,10 +245,10 @@ export default function Admin() {
         </div>
 
         {/* Customer List Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-          <div className="bg-gradient-to-r from-slate-700 to-slate-600 p-6">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-purple-100">
+          <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6">
             <div className="flex items-center gap-3">
-              <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg border border-white/20">
+              <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg border border-white/30">
                 <User className="h-6 w-6 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white">Customer List</h2>
