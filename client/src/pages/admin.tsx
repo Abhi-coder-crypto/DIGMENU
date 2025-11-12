@@ -177,7 +177,7 @@ export default function Admin() {
               onClick={handleLogout} 
               variant="outline"
               size="sm"
-              className="bg-black/90 border-gray-800 text-white hover:bg-black"
+              className="bg-black border-gray-800 text-white no-default-hover-elevate"
               data-testid="button-logout"
             >
               Logout
