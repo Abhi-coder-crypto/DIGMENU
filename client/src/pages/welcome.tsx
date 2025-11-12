@@ -64,13 +64,16 @@ export default function Welcome() {
       setPhoneNumber(customer.phoneNumber);
       
       // Set appropriate welcome message based on visit count
-      if (customer.visits === 1) {
+      // Note: New customers have visits = 0, which becomes 1 after first menu page load
+      if (customer.visits === 0 || customer.visits === 1) {
         setWelcomeMessage(`Welcome ${customer.name}, for your first visit`);
       } else {
         setWelcomeMessage(`Welcome back ${customer.name}`);
       }
       
       setShowDialog(false);
+    } else {
+      setShowDialog(true);
     }
   }, []);
 
@@ -128,7 +131,8 @@ export default function Welcome() {
       sessionStorage.setItem('customer', JSON.stringify(customer));
       
       // Set appropriate welcome message based on visit count
-      if (customer.visits === 0) {
+      // Note: New customers have visits = 0, which becomes 1 after first menu page load
+      if (customer.visits === 0 || customer.visits === 1) {
         setWelcomeMessage(`Welcome ${customer.name}, for your first visit`);
       } else {
         setWelcomeMessage(`Welcome back ${customer.name}`);
