@@ -169,113 +169,173 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-100/50 to-orange-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-lg shadow-xl p-6 mb-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-800">
-              Customer Loyalty Dashboard
-            </h1>
-            <Button onClick={handleLogout} variant="outline">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-2xl p-6 md:p-8 mb-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+          <div className="relative flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
+                  <ChefHat className="h-8 w-8 text-white" />
+                </div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                  Customer Loyalty Dashboard
+                </h1>
+              </div>
+              <p className="text-orange-100 text-sm md:text-base">Track and manage your customer relationships</p>
+            </div>
+            <Button 
+              onClick={handleLogout} 
+              variant="outline"
+              className="bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 font-semibold"
+            >
               Logout
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+          <div className="bg-gradient-to-br from-white to-orange-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-orange-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Customers</p>
-                <p className="text-3xl font-bold text-orange-500">{customers.length}</p>
+                <p className="text-sm font-semibold text-orange-600 uppercase tracking-wide mb-2">Total Customers</p>
+                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">{customers.length}</p>
               </div>
-              <User className="h-12 w-12 text-orange-500 opacity-50" />
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-xl shadow-lg">
+                <User className="h-10 w-10 text-white" />
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-blue-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total Visits</p>
-                <p className="text-3xl font-bold text-orange-500">
+                <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Total Visits</p>
+                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   {customers.reduce((sum, c) => sum + c.visits, 0)}
                 </p>
               </div>
-              <TrendingUp className="h-12 w-12 text-orange-500 opacity-50" />
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-xl shadow-lg">
+                <TrendingUp className="h-10 w-10 text-white" />
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-gradient-to-br from-white to-green-50/30 rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-2 border-green-200/50">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Avg Visits/Customer</p>
-                <p className="text-3xl font-bold text-orange-500">
+                <p className="text-sm font-semibold text-green-600 uppercase tracking-wide mb-2">Avg Visits/Customer</p>
+                <p className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
                   {customers.length > 0 
                     ? (customers.reduce((sum, c) => sum + c.visits, 0) / customers.length).toFixed(1)
                     : '0'}
                 </p>
               </div>
-              <Calendar className="h-12 w-12 text-orange-500 opacity-50" />
+              <div className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-xl shadow-lg">
+                <Calendar className="h-10 w-10 text-white" />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800">Customer List</h2>
+        {/* Customer List Table */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-orange-100">
+          <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 backdrop-blur-sm p-2 rounded-lg">
+                <User className="h-6 w-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">Customer List</h2>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-orange-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <thead>
+                <tr className="bg-gradient-to-r from-orange-50 to-orange-100/50 border-b-2 border-orange-200">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
                     Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
                     Phone Number
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
                     Visits
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
                     First Visit
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-orange-700 uppercase tracking-wider">
                     Last Visit
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {customers.map((customer) => (
-                  <tr key={customer._id.toString()} className="hover:bg-orange-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <User className="h-5 w-5 text-gray-400 mr-2" />
-                        <span className="text-sm font-medium text-gray-900">{customer.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <Phone className="h-5 w-5 text-gray-400 mr-2" />
-                        <span className="text-sm text-gray-700">{customer.phoneNumber}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
-                        {customer.visits} {customer.visits === 1 ? 'visit' : 'visits'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {new Date(customer.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {new Date(customer.updatedAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="bg-white divide-y divide-orange-100">
+                {customers.map((customer, index) => {
+                  const getVisitBadgeColor = (visits: number) => {
+                    if (visits >= 10) return "bg-gradient-to-r from-purple-500 to-purple-600 text-white";
+                    if (visits >= 5) return "bg-gradient-to-r from-green-500 to-green-600 text-white";
+                    if (visits >= 3) return "bg-gradient-to-r from-blue-500 to-blue-600 text-white";
+                    return "bg-gradient-to-r from-orange-500 to-orange-600 text-white";
+                  };
+
+                  return (
+                    <tr 
+                      key={customer._id.toString()} 
+                      className="hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200 group"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-lg shadow-sm group-hover:shadow-md transition-shadow">
+                            <User className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="text-sm font-semibold text-gray-900">{customer.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-orange-500" />
+                          <span className="text-sm font-medium text-gray-700">{customer.phoneNumber}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-4 py-2 inline-flex items-center gap-2 text-sm font-bold rounded-full shadow-sm ${getVisitBadgeColor(customer.visits)}`}>
+                          <TrendingUp className="h-4 w-4" />
+                          {customer.visits} {customer.visits === 1 ? 'visit' : 'visits'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-green-500" />
+                          <span className="text-sm font-medium text-gray-700">
+                            {new Date(customer.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-blue-500" />
+                          <span className="text-sm font-medium text-gray-700">
+                            {new Date(customer.updatedAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             {customers.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                No customers yet
+              <div className="text-center py-16">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="bg-orange-100 p-6 rounded-full">
+                    <User className="h-12 w-12 text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-xl font-semibold text-gray-800 mb-1">No customers yet</p>
+                    <p className="text-sm text-gray-500">Customer data will appear here once they register</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
