@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Lock, User, TrendingUp, Calendar, Phone, LayoutDashboard, LogOut } from "lucide-react";
+import { Lock, User, TrendingUp, Calendar, Phone, LayoutDashboard, LogOut, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Customer } from "@shared/schema";
+import restaurantBg from "@assets/stock_images/elegant_chinese_rest_3250bd82.jpg";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -76,36 +77,54 @@ export default function Admin() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="space-y-3 pb-6">
-            <div className="flex justify-center">
-              <div className="bg-muted p-3 rounded-md">
-                <Lock className="h-6 w-6 text-muted-foreground" />
+      <div 
+        className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${restaurantBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-orange-900/60 backdrop-blur-sm"></div>
+        
+        <div className="relative z-10 w-full max-w-md">
+          <div className="bg-white/95 backdrop-blur-xl rounded-md shadow-2xl p-8 border border-white/20">
+            <div className="flex flex-col items-center mb-8">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-5 rounded-full shadow-lg mb-4">
+                <ChefHat className="h-10 w-10 text-white" />
               </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent mb-2">
+                Ming's Chinese Cuisine
+              </h1>
+              <p className="text-gray-600 text-sm font-medium">Admin Dashboard</p>
             </div>
-            <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
-            <p className="text-sm text-muted-foreground text-center">
-              Enter your password to access the dashboard
-            </p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
+
+            <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Password</label>
-                <Input
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  data-testid="input-admin-password"
-                />
+                <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-orange-500" />
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    type="password"
+                    placeholder="Enter Admin Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-4 pr-4 py-3 border-2 border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 rounded-md shadow-sm transition-all"
+                    required
+                    data-testid="input-admin-password"
+                  />
+                </div>
               </div>
               
               {error && (
-                <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3">
-                  <p className="text-destructive text-sm text-center">
+                <div className="bg-red-50 border-2 border-red-300 rounded-md p-3">
+                  <p className="text-red-700 text-sm font-medium text-center flex items-center justify-center gap-2">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
                     {error}
                   </p>
                 </div>
@@ -113,15 +132,34 @@ export default function Admin() {
               
               <Button 
                 type="submit" 
-                className="w-full"
+                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 dark:from-orange-500 dark:to-orange-600 dark:hover:from-orange-600 dark:hover:to-orange-700 text-white font-bold py-3 rounded-md shadow-lg hover:shadow-xl transition-all"
                 disabled={isLoading}
                 data-testid="button-admin-login"
               >
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Logging in...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Lock className="h-5 w-5" />
+                    Access Dashboard
+                  </span>
+                )}
               </Button>
             </form>
-          </CardContent>
-        </Card>
+
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <p className="text-center text-xs text-gray-500">
+                Secure admin access only
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
