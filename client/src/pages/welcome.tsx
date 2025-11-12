@@ -47,9 +47,9 @@ export default function Welcome() {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Check localStorage for existing customer data
+  // Check sessionStorage for existing customer data
   useEffect(() => {
-    const storedCustomer = localStorage.getItem('customer');
+    const storedCustomer = sessionStorage.getItem('customer');
     if (storedCustomer) {
       const customer = JSON.parse(storedCustomer);
       setExistingCustomer(customer);
@@ -68,7 +68,7 @@ export default function Welcome() {
           const customer = await response.json();
           setExistingCustomer(customer);
           setCustomerName(customer.name);
-          localStorage.setItem('customer', JSON.stringify(customer));
+          sessionStorage.setItem('customer', JSON.stringify(customer));
         } else {
           setExistingCustomer(null);
         }
@@ -110,7 +110,7 @@ export default function Welcome() {
         });
         customer = await response.json();
       }
-      localStorage.setItem('customer', JSON.stringify(customer));
+      sessionStorage.setItem('customer', JSON.stringify(customer));
       setLocation("/menu");
     } catch (error) {
       console.error("Error submitting customer data:", error);
@@ -286,7 +286,6 @@ export default function Welcome() {
               </button>
               <button
                 onClick={() => {
-                  localStorage.removeItem('customer');
                   sessionStorage.clear();
                   setExistingCustomer(null);
                   setCustomerName('');

@@ -206,7 +206,7 @@ export default function Menu() {
   // Load customer data and increment visit counter
   useEffect(() => {
     const loadCustomer = async () => {
-      const storedCustomer = localStorage.getItem('customer');
+      const storedCustomer = sessionStorage.getItem('customer');
       if (storedCustomer) {
         const customerData = JSON.parse(storedCustomer);
         setCustomer(customerData);
@@ -223,7 +223,7 @@ export default function Menu() {
             if (response.ok) {
               const updatedCustomer = await response.json();
               setCustomer(updatedCustomer);
-              localStorage.setItem('customer', JSON.stringify(updatedCustomer));
+              sessionStorage.setItem('customer', JSON.stringify(updatedCustomer));
             }
           } catch (error) {
             console.error("Error incrementing customer visits:", error);
