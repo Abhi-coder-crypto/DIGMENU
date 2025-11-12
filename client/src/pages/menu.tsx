@@ -15,6 +15,13 @@ import {
   MicOff,
   User as UserIcon,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { FaInstagram } from "react-icons/fa";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
@@ -146,6 +153,7 @@ export default function Menu() {
   const [speechRecognition, setSpeechRecognition] = useState(null);
   const [voiceSearchSupported, setVoiceSearchSupported] = useState(false);
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
 
   const { data: menuItems = [], isLoading } = useQuery<MenuItem[]>({
     queryKey: ["/api/menu-items"],
@@ -352,13 +360,14 @@ export default function Menu() {
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
               {/* Customer Profile */}
               {customer && (
-                <div className="flex items-center space-x-2 bg-orange-50 border-2 border-orange-500 rounded-full px-3 py-1">
+                <button
+                  onClick={() => setShowProfileDialog(true)}
+                  className="flex items-center space-x-2 bg-orange-50 border-2 border-orange-500 rounded-full px-3 py-1 hover-elevate active-elevate-2 transition-all"
+                  data-testid="button-customer-profile"
+                >
                   <UserIcon className="h-4 w-4 text-orange-500" />
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-orange-600">{customer.name}</span>
-                    <span className="text-xs text-orange-500">Visits: {customer.visits}</span>
-                  </div>
-                </div>
+                  <span className="text-xs font-semibold text-orange-600">{customer.name}</span>
+                </button>
               )}
 
               {/* Hamburger Menu Button */}
@@ -552,11 +561,6 @@ export default function Menu() {
                 ? `Welcome ${customer.name}, for your first visit` 
                 : `Welcome back ${customer.name}`}
             </p>
-            {customer.visits > 1 && (
-              <p className="text-xs sm:text-sm text-orange-500 mt-1">
-                Visit #{customer.visits} - Thank you for returning!
-              </p>
-            )}
           </div>
         </motion.div>
       )}
@@ -1025,6 +1029,34 @@ export default function Menu() {
           onClick={() => setShowFilterDropdown(false)}
         />
       )}
+
+      {/* Customer Profile Dialog */}
+      <Dialog open={showProfileDialog} onOpenChange={setShowProfileDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-orange-600 text-xl">Customer Profile</DialogTitle>
+            <DialogDescription>
+              Your account information
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
+              <UserIcon className="h-5 w-5 text-orange-500" />
+              <div>
+                <p className="text-xs text-gray-500">Name</p>
+                <p className="text-sm font-semibold text-gray-900">{customer?.name}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
+              <Phone className="h-5 w-5 text-orange-500" />
+              <div>
+                <p className="text-xs text-gray-500">Phone Number</p>
+                <p className="text-sm font-semibold text-gray-900">{customer?.phoneNumber}</p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
