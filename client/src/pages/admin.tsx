@@ -169,23 +169,17 @@ export default function Admin() {
       <div className="border-b bg-gradient-to-r from-orange-500/95 to-amber-600/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm p-2.5 rounded-md border border-white/30">
-                <ChefHat className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-semibold text-white">Customer Loyalty Dashboard</h1>
-                <p className="text-sm text-white/90">Ming's Chinese Cuisine</p>
-              </div>
+            <div>
+              <h1 className="text-xl font-semibold text-white">Customer Loyalty Dashboard</h1>
+              <p className="text-sm text-white/90">Ming's Chinese Cuisine</p>
             </div>
             <Button 
               onClick={handleLogout} 
               variant="outline"
               size="sm"
-              className="bg-white/20 backdrop-blur-md border-white/40 text-white hover:bg-white/30"
+              className="bg-black/90 border-gray-800 text-white hover:bg-black"
               data-testid="button-logout"
             >
-              <LogOut className="h-4 w-4 mr-2" />
               Logout
             </Button>
           </div>
