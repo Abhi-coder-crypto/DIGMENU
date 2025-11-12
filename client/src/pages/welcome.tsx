@@ -62,10 +62,15 @@ export default function Welcome() {
       setExistingCustomer(customer);
       setCustomerName(customer.name);
       setPhoneNumber(customer.phoneNumber);
-      setWelcomeMessage(`Welcome back ${customer.name}`);
+      
+      // Set appropriate welcome message based on visit count
+      if (customer.visits === 1) {
+        setWelcomeMessage(`Welcome ${customer.name}, for your first visit`);
+      } else {
+        setWelcomeMessage(`Welcome back ${customer.name}`);
+      }
+      
       setShowDialog(false);
-    } else {
-      setShowDialog(true);
     }
   }, []);
 
@@ -121,7 +126,14 @@ export default function Welcome() {
         customer = await response.json();
       }
       sessionStorage.setItem('customer', JSON.stringify(customer));
-      setWelcomeMessage(`Welcome back ${customer.name}`);
+      
+      // Set appropriate welcome message based on visit count
+      if (customer.visits === 0) {
+        setWelcomeMessage(`Welcome ${customer.name}, for your first visit`);
+      } else {
+        setWelcomeMessage(`Welcome back ${customer.name}`);
+      }
+      
       setShowDialog(false);
       setLocation("/menu");
     } catch (error) {
@@ -217,7 +229,14 @@ export default function Welcome() {
 
           {/* Explore Menu Button */}
           <button
-            onClick={() => setLocation("/menu")}
+            onClick={() => {
+              const storedCustomer = sessionStorage.getItem('customer');
+              if (storedCustomer) {
+                setLocation("/menu");
+              } else {
+                setShowDialog(true);
+              }
+            }}
             className="bg-white text-orange-500 font-semibold border-2 border-orange-500 rounded-full hover:bg-orange-50 transition-colors flex items-center"
             style={{
               padding: `${12 * scaleFactor}px ${32 * scaleFactor}px`,
