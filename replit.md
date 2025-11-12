@@ -32,6 +32,8 @@ The application follows a traditional client-server architecture with clear sepa
 -   **API**: RESTful API with JSON responses
 -   **Technical Implementations**: Monorepo structure, full type safety across the stack, component-based UI, advanced animation system. Category-based data storage for menu items with automatic collection creation for new categories.
 -   **Feature Specifications**: Menu display with category filtering and search, shopping cart functionality, Google review system integration, and menu item sorting (Veg items first, then Chicken, then Prawns, then others).
+-   **Customer Authentication**: Phone number-based customer registration and login system with personalized welcome messages. Visit tracking increments automatically when customers access the menu page.
+-   **Privacy Design**: Visit counts and customer analytics are only visible to administrators via the admin dashboard. Customers see only their name and phone number in their profile.
 
 ### Deployment Strategy
 
