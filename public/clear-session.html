@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Session - Ming's</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #f97316;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        button:hover {
+            background: #ea580c;
+        }
+        .success {
+            color: #16a34a;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Customer Session</h1>
+        <p>Click the button below to clear all cached customer data from your browser.</p>
+        <button onclick="clearSession()">Clear Session Data</button>
+        <p class="success" id="success">✓ Session cleared! <a href="/">Go to Home</a></p>
+    </div>
+
+    <script>
+        function clearSession() {
+            sessionStorage.clear();
+            localStorage.clear();
+            document.getElementById('success').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
