@@ -332,7 +332,7 @@
 // const connectionString = "mongodb+srv://airavatatechnologiesprojects:8tJ6v8oTyQE1AwLV@mingsdb.mmjpnwc.mongodb.net/?retryWrites=true&w=majority&appName=MINGSDB";
 // export const storage = new MongoStorage(connectionString);
 import { MongoClient, Db, Collection, ObjectId } from "mongodb";
-import { type User, type InsertUser, type MenuItem, type InsertMenuItem, type CartItem, type InsertCartItem, type Customer, type InsertCustomer } from "@shared/schema";
+import { type User, type InsertUser, type MenuItem, type InsertMenuItem, type CartItem, type InsertCartItem, type Customer, type InsertCustomer, type WhatsAppSettings, type InsertWhatsAppSettings } from "@shared/schema";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -354,6 +354,9 @@ export interface IStorage {
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   incrementCustomerVisits(phoneNumber: string): Promise<Customer | undefined>;
   getAllCustomers(): Promise<Customer[]>;
+
+  getWhatsAppSettings(): Promise<WhatsAppSettings | undefined>;
+  saveWhatsAppSettings(settings: InsertWhatsAppSettings): Promise<WhatsAppSettings>;
 }
 
 export class MongoStorage implements IStorage {
@@ -363,6 +366,7 @@ export class MongoStorage implements IStorage {
   private cartItemsCollection: Collection<CartItem>;
   private usersCollection: Collection<User>;
   private customersCollection: Collection<Customer>;
+  private whatsappSettingsCollection: Collection<WhatsAppSettings>;
   private restaurantId: ObjectId;
 
   // Define available categories - these match menu.tsx categories
@@ -427,6 +431,7 @@ export class MongoStorage implements IStorage {
     this.cartItemsCollection = this.db.collection("cartitems");
     this.usersCollection = this.db.collection("users");
     this.customersCollection = this.db.collection("customers");
+    this.whatsappSettingsCollection = this.db.collection("whatsappsettings");
     this.restaurantId = new ObjectId("6874cff2a880250859286de6");
   }
 
@@ -695,6 +700,52 @@ export class MongoStorage implements IStorage {
     } catch (error) {
       console.error("Error getting all customers:", error);
       return [];
+    }
+  }
+
+  async getWhatsAppSettings(): Promise<WhatsAppSettings | undefined> {
+    try {
+      const settings = await this.whatsappSettingsCollection.findOne({});
+      return settings || undefined;
+    } catch (error) {
+      console.error("Error getting WhatsApp settings:", error);
+      return undefined;
+    }
+  }
+
+  async saveWhatsAppSettings(insertSettings: InsertWhatsAppSettings): Promise<WhatsAppSettings> {
+    try {
+      const now = new Date();
+      const existingSettings = await this.whatsappSettingsCollection.findOne({});
+      
+      if (existingSettings) {
+        const result = await this.whatsappSettingsCollection.findOneAndUpdate(
+          { _id: existingSettings._id },
+          {
+            $set: {
+              ...insertSettings,
+              updatedAt: now
+            }
+          },
+          { returnDocument: 'after' }
+        );
+        return result!;
+      }
+
+      const settings: Omit<WhatsAppSettings, '_id'> = {
+        ...insertSettings,
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      const result = await this.whatsappSettingsCollection.insertOne(settings as WhatsAppSettings);
+      return {
+        _id: result.insertedId,
+        ...settings,
+      } as WhatsAppSettings;
+    } catch (error) {
+      console.error("Error saving WhatsApp settings:", error);
+      throw error;
     }
   }
 

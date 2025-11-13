@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCartItemSchema, insertCustomerSchema } from "@shared/schema";
+import { insertCartItemSchema, insertCustomerSchema, insertWhatsAppSettingsSchema } from "@shared/schema";
 
 declare module 'express-session' {
   interface SessionData {
@@ -172,6 +172,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(customers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch customers" });
+    }
+  });
+
+  // WhatsApp settings routes
+  app.get("/api/whatsapp-settings", requireAdmin, async (req, res) => {
+    try {
+      const settings = await storage.getWhatsAppSettings();
+      if (!settings) {
+        return res.status(404).json({ message: "WhatsApp settings not found" });
+      }
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch WhatsApp settings" });
+    }
+  });
+
+  app.post("/api/whatsapp-settings", requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertWhatsAppSettingsSchema.parse(req.body);
+      const settings = await storage.saveWhatsAppSettings(validatedData);
+      res.json(settings);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid WhatsApp settings data" });
     }
   });
 

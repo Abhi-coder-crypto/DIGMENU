@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Lock, User, TrendingUp, Calendar, Phone, LayoutDashboard, LogOut, ChefHat, Eye, EyeOff } from "lucide-react";
+import { Lock, User, TrendingUp, Calendar, Phone, LayoutDashboard, LogOut, ChefHat, Eye, EyeOff, Settings, Cake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Customer } from "@shared/schema";
 import restaurantBg from "@assets/stock_images/elegant_chinese_rest_3250bd82.jpg";
+import { useLocation } from "wouter";
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,11 +15,37 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [visitFilter, setVisitFilter] = useState<"all" | "weekly" | "monthly" | "yearly">("all");
+  const [, setLocation] = useLocation();
 
-  const { data: customers = [], refetch } = useQuery<Customer[]>({
+  const { data: allCustomers = [], refetch } = useQuery<Customer[]>({
     queryKey: ["/api/customers"],
     enabled: isAuthenticated,
   });
+
+  const customers = useMemo(() => {
+    if (!allCustomers || visitFilter === "all") return allCustomers;
+
+    const now = new Date();
+    const filterDate = new Date();
+
+    switch (visitFilter) {
+      case "weekly":
+        filterDate.setDate(now.getDate() - 7);
+        break;
+      case "monthly":
+        filterDate.setMonth(now.getMonth() - 1);
+        break;
+      case "yearly":
+        filterDate.setFullYear(now.getFullYear() - 1);
+        break;
+    }
+
+    return allCustomers.filter(customer => {
+      const lastVisit = new Date(customer.updatedAt);
+      return lastVisit >= filterDate;
+    });
+  }, [allCustomers, visitFilter]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -186,15 +214,28 @@ export default function Admin() {
               <h1 className="text-xl font-semibold text-white">Customer Loyalty Dashboard</h1>
               <p className="text-sm text-white/90">Ming's Chinese Cuisine</p>
             </div>
-            <Button 
-              onClick={handleLogout} 
-              variant="outline"
-              size="sm"
-              className="bg-white border-white/30 text-gray-800 no-default-hover-elevate no-default-active-elevate"
-              data-testid="button-logout"
-            >
-              Logout
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button 
+                onClick={() => setLocation("/admin/settings")} 
+                variant="outline"
+                size="sm"
+                className="bg-white border-white/30 text-gray-800 no-default-hover-elevate no-default-active-elevate"
+                data-testid="button-settings"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <Button 
+                onClick={handleLogout} 
+                variant="outline"
+                size="sm"
+                className="bg-white border-white/30 text-gray-800 no-default-hover-elevate no-default-active-elevate"
+                data-testid="button-logout"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -255,11 +296,27 @@ export default function Admin() {
 
         <Card className="border-orange-100/30">
           <CardHeader className="bg-gradient-to-r from-orange-50/50 to-amber-50/30">
-            <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-md">
-                <User className="h-4 w-4 text-white" />
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-md">
+                  <User className="h-4 w-4 text-white" />
+                </div>
+                <CardTitle className="text-lg text-orange-950">Customer List</CardTitle>
               </div>
-              <CardTitle className="text-lg text-orange-950">Customer List</CardTitle>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Filter:</span>
+                <Select value={visitFilter} onValueChange={(value: any) => setVisitFilter(value)}>
+                  <SelectTrigger className="w-40" data-testid="select-visit-filter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem value="weekly">This Week</SelectItem>
+                    <SelectItem value="monthly">This Month</SelectItem>
+                    <SelectItem value="yearly">This Year</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
@@ -287,13 +344,10 @@ export default function Admin() {
                         Phone
                       </th>
                       <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
+                        Date of Birth
+                      </th>
+                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
                         Visits
-                      </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
-                        First Visit
-                      </th>
-                      <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-orange-800/80 uppercase tracking-wider">
-                        Last Visit
                       </th>
                     </tr>
                   </thead>
@@ -327,25 +381,17 @@ export default function Admin() {
                             </div>
                           </td>
                           <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Cake className="h-3.5 w-3.5 text-pink-600/70" />
+                              <span className="text-sm text-muted-foreground">
+                                {customer.dateOfBirth ? new Date(customer.dateOfBirth).toLocaleDateString() : 'Not provided'}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                             <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium text-sm ${getVisitBadge(customer.visits)}`}>
                               <TrendingUp className="h-3.5 w-3.5" />
                               {customer.visits}
-                            </div>
-                          </td>
-                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-3.5 w-3.5 text-green-600/70" />
-                              <span className="text-sm text-muted-foreground">
-                                {new Date(customer.createdAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-3.5 w-3.5 text-blue-600/70" />
-                              <span className="text-sm text-muted-foreground">
-                                {new Date(customer.updatedAt).toLocaleDateString()}
-                              </span>
                             </div>
                           </td>
                         </tr>

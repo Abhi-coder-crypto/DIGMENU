@@ -20,12 +20,14 @@ export default function Welcome() {
   const [scaleFactor, setScaleFactor] = useState(1);
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [existingCustomer, setExistingCustomer] = useState<Customer | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [dobError, setDobError] = useState("");
 
   // Detect screen size and calculate scale factor
   useEffect(() => {
@@ -64,6 +66,7 @@ export default function Welcome() {
       setExistingCustomer(customer);
       setCustomerName(customer.name);
       setPhoneNumber(customer.phoneNumber);
+      setDateOfBirth(customer.dateOfBirth || "");
       
       // Set appropriate welcome message based on visit count
       // Note: New customers have visits = 0, which becomes 1 after first menu page load
@@ -88,9 +91,11 @@ export default function Welcome() {
           const customer = await response.json();
           setExistingCustomer(customer);
           setCustomerName(customer.name);
+          setDateOfBirth(customer.dateOfBirth || "");
           sessionStorage.setItem('customer', JSON.stringify(customer));
         } else {
           setExistingCustomer(null);
+          setDateOfBirth("");
         }
       } catch (error) {
         console.error("Error checking customer:", error);
@@ -125,8 +130,28 @@ export default function Welcome() {
       checkExistingCustomer(phone);
     } else {
       setExistingCustomer(null);
+      setCustomerName("");
+      setDateOfBirth("");
     }
   }, [checkExistingCustomer]);
+
+  // Handle DOB change with validation
+  const handleDobChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const dob = e.target.value;
+    setDateOfBirth(dob);
+    
+    if (dob) {
+      const selectedDate = new Date(dob);
+      const today = new Date();
+      if (selectedDate > today) {
+        setDobError("Date of birth cannot be in the future");
+      } else {
+        setDobError("");
+      }
+    } else {
+      setDobError("");
+    }
+  }, []);
 
   // Handle form submission
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
@@ -150,6 +175,15 @@ export default function Welcome() {
       hasError = true;
     }
     
+    if (dateOfBirth) {
+      const selectedDate = new Date(dateOfBirth);
+      const today = new Date();
+      if (selectedDate > today) {
+        setDobError("Date of birth cannot be in the future");
+        hasError = true;
+      }
+    }
+    
     if (hasError) {
       return;
     }
@@ -163,7 +197,7 @@ export default function Welcome() {
         const response = await fetch('/api/customers', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: customerName, phoneNumber }),
+          body: JSON.stringify({ name: customerName, phoneNumber, dateOfBirth: dateOfBirth || undefined }),
         });
         customer = await response.json();
       }
@@ -185,7 +219,7 @@ export default function Welcome() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [customerName, phoneNumber, existingCustomer, setLocation]);
+  }, [customerName, phoneNumber, dateOfBirth, existingCustomer, setLocation]);
 
   // Social media click handlers
   const handleSocialClick = useCallback((url: string) => {
@@ -462,6 +496,26 @@ export default function Welcome() {
                 />
                 {phoneError && (
                   <p className="text-red-500 text-xs mt-1 text-center" data-testid="error-phone">{phoneError}</p>
+                )}
+              </div>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <input
+                  type="date"
+                  placeholder="Date of Birth (Optional)"
+                  value={dateOfBirth}
+                  onChange={handleDobChange}
+                  disabled={!!existingCustomer}
+                  max={new Date().toISOString().split('T')[0]}
+                  className={`w-full bg-white text-gray-800 border-2 ${dobError ? 'border-red-500' : 'border-orange-300'} rounded-xl pl-12 pr-4 py-3.5 text-center focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-500 disabled:bg-gradient-to-r disabled:from-gray-50 disabled:to-gray-100 disabled:border-gray-300 shadow-sm transition-all placeholder:text-gray-400 font-medium`}
+                  data-testid="input-dob"
+                />
+                {dobError && (
+                  <p className="text-red-500 text-xs mt-1 text-center" data-testid="error-dob">{dobError}</p>
                 )}
               </div>
             </div>
